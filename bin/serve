@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+'use strict';
+require('localenv');
+
+let koa = require('koa');
+let app = koa();
+
+let router = require('../lib/router');
+
+app
+    .use(router.routes())
+    .use(router.allowedMethods());
+
+let port = process.env.WEB_PORT || 8000;
+app.listen(port);

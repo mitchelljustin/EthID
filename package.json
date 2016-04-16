@@ -1,0 +1,19 @@
+{
+  "name": "eid",
+  "version": "1.0.0",
+  "description": "Ethereum verified identities",
+  "main": "bin/serve",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mitchell Van Der Hoeff",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.0.0-rc.3",
+    "koa": "^1.2.0",
+    "koa-router": "^5.4.0",
+    "localenv": "^0.2.2",
+    "redis": "^2.6.0-1",
+    "web3": "^0.15.3"
+  }
+}

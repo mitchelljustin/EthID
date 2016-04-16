@@ -1,0 +1,17 @@
+web:
+  build: .
+  ports:
+    - "8000:8000"
+  links:
+    - redis
+    - geth
+
+redis:
+  image: redis
+  ports:
+    - "6379:6379"
+
+geth:
+  image: kunstmaan/ethereum-geth-devnet
+  ports:
+    - "8545:8545"
