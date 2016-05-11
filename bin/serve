@@ -2,29 +2,40 @@
 'use strict';
 require('localenv');
 
-let koa = require('koa');
-let mount = require('koa-mount');
-let serve = require('koa-static');
-let hbs = require('koa-hbs');
 let path = require('path');
-let app = koa();
+let express = require('express');
+let hbs = require('express-handlebars');
+let jwt = require('express-jwt');
+let session = require('express-session');
 
-app.use(hbs.middleware({
-    viewPath: path.resolve('www/views'),
-    layoutsPath: path.resolve('www/layouts'),
+let app = express();
+
+app.engine('.hbs', hbs({
+    extname: '.hbs',
+    layoutsDir: path.resolve('www/layouts'),
     defaultLayout: 'main',
+}));
+app.set('views', path.resolve('www/views'));
+app.set('view engine', '.hbs');
+
+app.set('trust proxy', 1); // trust first proxy
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    cookie: {maxAge: 60000},
+    resave: true,
+    saveUninitialized: false,
 }));
 
 let router = require('../lib/router');
 
-app
-    .use(router.routes())
-    .use(router.allowedMethods());
+app.use(router);
 
-app.use(mount('/', serve('www/public')));
-app.use(mount('/bower_components', serve('www/bower_components')));
+app.use(express.static(path.resolve('www/public')));
+app.use('/bower_components', express.static(path.resolve('www/bower_components')));
 
 let port = process.env.WEB_PORT || 8000;
+
 app.listen(port, () => {
     console.log(`Listening for HTTP on port ${port}`)
 });
