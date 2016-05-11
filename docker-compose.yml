@@ -12,6 +12,8 @@ redis:
     - "6379:6379"
 
 geth:
-  image: kunstmaan/ethereum-geth-devnet
+  build: ./geth
+  environment:
+    - GETHFLAGS=--dev
   ports:
     - "8545:8545"

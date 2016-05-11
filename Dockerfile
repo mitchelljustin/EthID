@@ -1,4 +1,6 @@
-FROM node:5.9.0
+FROM mhart/alpine-node:6.1.0
+
+RUN apk add -U git
 
 RUN mkdir -p /app
 WORKDIR /app
@@ -8,4 +10,4 @@ RUN npm install
 
 ADD . /app
 
-CMD ["node", "bin/serve"]
+CMD ["node", "bin /serve"]

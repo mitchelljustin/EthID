@@ -3,7 +3,17 @@
 require('localenv');
 
 let koa = require('koa');
+let mount = require('koa-mount');
+let serve = require('koa-static');
+let hbs = require('koa-hbs');
+let path = require('path');
 let app = koa();
+
+app.use(hbs.middleware({
+    viewPath: path.resolve('www/views'),
+    layoutsPath: path.resolve('www/layouts'),
+    defaultLayout: 'main',
+}));
 
 let router = require('../lib/router');
 
@@ -11,5 +21,10 @@ app
     .use(router.routes())
     .use(router.allowedMethods());
 
+app.use(mount('/', serve('www/public')));
+app.use(mount('/bower_components', serve('www/bower_components')));
+
 let port = process.env.WEB_PORT || 8000;
-app.listen(port);
+app.listen(port, () => {
+    console.log(`Listening for HTTP on port ${port}`)
+});

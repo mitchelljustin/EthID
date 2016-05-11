@@ -13,14 +13,17 @@ contract owned {
     }
 }
 
-contract EID is owned {
+contract EthereumID is owned {
     event Registered(address addr, string email);
     event RegisteredVerified(address addr, string email);
     event Unregistered(address addr, string email);
     event UnregisteredVerified(address addr, string email);
 
     mapping (address => string) verifiedEmailOf;
-    mapping (string => address) verifiedAddressOf;
+    
+    function () {
+        throw;
+    }
 
     function register(string email) {
         Registered(msg.sender, email);
@@ -40,11 +43,7 @@ contract EID is owned {
         if (bytes(verifiedEmailOf[addr]).length != 0) {
             throw;
         }
-        if (verifiedAddressOf[email] != address(0x0)) { // Already registered
-            throw;
-        }
         verifiedEmailOf[addr] = email;
-        verifiedAddressOf[email] = addr;
         RegisteredVerified(addr, email);
     }
 
@@ -55,10 +54,6 @@ contract EID is owned {
         if (bytes(email).length == 0) {
             throw;
         }
-        if (verifiedAddressOf[email] != addr) {
-            throw;
-        }
-        verifiedAddressOf[email] = address(0x0);
         verifiedEmailOf[addr] = "";
         UnregisteredVerified(addr, email);
     }
