@@ -10,12 +10,17 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.0.0-rc.3",
+    "body-parser": "^1.15.1",
+    "commander": "latest",
     "email-validator": "^1.0.4",
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.0.5",
     "localenv": "^0.2.2",
+    "mongoose": "^4.4.17",
+    "mongoose-session": "0.0.4",
     "redis": "^2.6.0-1",
+    "request": "latest",
     "request-promise": "^3.0.0",
     "web3": "^0.15.3"
   }

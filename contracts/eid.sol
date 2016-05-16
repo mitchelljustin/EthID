@@ -20,6 +20,11 @@ contract EthereumID is owned {
     event UnregisteredVerified(address addr, string email);
 
     mapping (address => string) verifiedEmailOf;
+    string identityType;
+
+    function EthereumID(string _identityType) {
+        identityType = _identityType;
+    }
     
     function () {
         throw;

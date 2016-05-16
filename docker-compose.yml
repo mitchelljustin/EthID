@@ -3,13 +3,13 @@ web:
   ports:
     - "8000:8000"
   links:
-    - redis
+    - mongo
     - geth
 
-redis:
-  image: redis
+mongo:
+  image: mongo
   ports:
-    - "6379:6379"
+    - "27017:27017"
 
 geth:
   build: ./geth
