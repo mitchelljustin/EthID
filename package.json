@@ -13,10 +13,10 @@
     "email-validator": "^1.0.4",
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
-    "express-jwt": "^3.4.0",
     "express-session": "^1.0.5",
     "localenv": "^0.2.2",
     "redis": "^2.6.0-1",
+    "request-promise": "^3.0.0",
     "web3": "^0.15.3"
   }
 }

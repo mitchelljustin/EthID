@@ -5,8 +5,9 @@ require('localenv');
 let path = require('path');
 let express = require('express');
 let hbs = require('express-handlebars');
-let jwt = require('express-jwt');
 let session = require('express-session');
+
+require('../lib/contractManager').start();
 
 let app = express();
 
@@ -22,7 +23,6 @@ app.set('trust proxy', 1); // trust first proxy
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    cookie: {maxAge: 60000},
     resave: true,
     saveUninitialized: false,
 }));
