@@ -38,27 +38,12 @@ contract EthereumID is owned {
         Unregistered(msg.sender, email);
     }
 
-    function _verifyRegistered(address addr, string email) ownerOnly {
-        if (addr == address(0x0)) {
-            throw;
-        }
-        if (bytes(email).length == 0) {
-            throw;
-        }
-        if (bytes(verifiedEmailOf[addr]).length != 0) {
-            throw;
-        }
+    function _setVerifiedIdentity(address addr, string email) ownerOnly {
         verifiedEmailOf[addr] = email;
         RegisteredVerified(addr, email);
     }
 
-    function _verifyUnregistered(address addr, string email) ownerOnly {
-        if (addr == address(0x0)) {
-            throw;
-        }
-        if (bytes(email).length == 0) {
-            throw;
-        }
+    function _delVerifiedIdentity(address addr, string email) ownerOnly {
         verifiedEmailOf[addr] = "";
         UnregisteredVerified(addr, email);
     }

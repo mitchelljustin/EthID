@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-sm-4 jumbotron">
+        <h4>
+            Verified identities for
+            <small>{{ ethereumAddress }}</small>
+        </h4>
+        <p>
+            These identities are stored and cryptographically secured in the Ethereum blockchain,
+            and verified by EthID.
+        </p>
+        <p>
+            If you want to verify your own identity, visit <a href="http://ethid.xyz">ethid.xyz</a>.
+        </p>
+    </div>
+    <div class="col-sm-8">
+        <h2 class="text-center">
+            Identities
+        </h2>
+        {{#unless identities}}
+            <h4>No verified identities for this address</h4>
+        {{else}}
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                </tr>
+                </thead>
+                {{#each identities}}
+                    <tr>
+                        <td>
+                            {{ emailAddress }}
+                        </td>
+                        <td>
+                            {{ identityType }}
+                        </td>
+                    </tr>
+                {{/each}}
+            </table>
+        {{/unless}}
+
+    </div>
+</div>

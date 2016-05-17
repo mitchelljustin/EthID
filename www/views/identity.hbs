@@ -24,7 +24,9 @@
             {{#each identities}}
                 <tr id="{{ ethereumAddress }}">
                     <td>
-                        {{ ethereumAddress }}
+                        <a href="/{{ ethereumAddress }}">
+                            {{ ethereumAddress }}
+                        </a>
                     </td>
                     <td>
                         {{ identityType }}
@@ -48,18 +50,21 @@
 </div>
 
 <script>
-    var ethAddrs = [
+    var identities = [
         {{#each identities}}
-            "{{ ethereumAddress }}",
+            {
+                addr: "{{ ethereumAddress }}",
+                identityType: "{{ identityType }}"
+            },
         {{/each}}
     ];
-    ethAddrs.forEach(function (ethAddr) {
-        let $row = $('#' + ethAddr);
+    identities.forEach(function (identity) {
+        let $row = $('#' + identity.addr);
         $row.find('._button_bar ._reject').on('click', function () {
             $.ajax({
                 method: 'POST',
-                url: '/identity/reject',
-                data: {ethereumAddress: ethAddr, emailAddress: "{{ profile.email }}"}
+                url: '/identity/reject/' + identity.identityType,
+                data: {ethereumAddress: identity.addr}
             })
                 .done(function () {
                     $row.remove();
@@ -68,8 +73,8 @@
         $row.find('._button_bar ._approve').on('click', function () {
             $.ajax({
                 method: 'POST',
-                url: '/identity/approve',
-                data: {ethereumAddress: ethAddr, emailAddress: "{{ profile.email }}"}
+                url: '/identity/approve/' + identity.identityType,
+                data: {ethereumAddress: identity.addr}
             })
                 .done(function () {
                     $row.find('._button_bar').html('<span>Verified</span>');

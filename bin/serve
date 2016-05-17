@@ -2,19 +2,20 @@
 'use strict';
 require('localenv');
 
+let debug = require('debug')('ethid:main');
 let path = require('path');
 let express = require('express');
 let hbs = require('express-handlebars');
 let session = require('express-session');
+let MongoStore = require('connect-mongo')(session);
 let bodyParser = require('body-parser');
-let mongooseSession = require('mongoose-session');
 let ContractManager = require('../lib/ContractManager');
 
 let mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI);
 
-let coinbaseManager = new ContractManager('coinbase');
-coinbaseManager.start();
+let contractManager = new ContractManager('coinbase');
+let port = process.env.WEB_PORT || 8000;
 
 let app = express();
 
@@ -31,19 +32,19 @@ app.set('trust proxy', 1); // trust first proxy
 app.use(session({
     key: 'sessions',
     secret: process.env.SESSION_SECRET,
-    store: mongooseSession(mongoose),
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
     resave: false,
     saveUninitialized: true,
     cookie: {}
 }));
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended: false}));
 
 let router = require('../lib/router');
 
-app.use(router);
-
 app.use(express.static(path.resolve('www/public')));
 app.use('/bower_components', express.static(path.resolve('www/bower_components')));
+
+app.use(router);
 
 app.use((err, req, res, next) => {
     if (err) {
@@ -56,8 +57,14 @@ app.use((err, req, res, next) => {
     }
 });
 
-let port = process.env.WEB_PORT || 8000;
-
-app.listen(port, () => {
-    console.log(`Listening for HTTP on port ${port}`)
+debug(`Starting..`);
+contractManager.start((err) => {
+    if (err) {
+        console.error(err);
+        process.exit(1);
+    }
+    debug(`Started contract manager (address ${contractManager.contract.address})`);
+    app.listen(port, () => {
+        debug(`Listening for HTTP on port ${port}`)
+    });
 });

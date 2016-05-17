@@ -12,6 +12,8 @@
     "async": "^2.0.0-rc.3",
     "body-parser": "^1.15.1",
     "commander": "latest",
+    "connect-mongo": "^1.2.0",
+    "debug": "latest",
     "email-validator": "^1.0.4",
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
