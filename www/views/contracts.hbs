@@ -1,9 +1,25 @@
 <div class="row">
-    <h3>Integrate EthID into your Ethereum contract</h3>
+    <h3>EthID contracts by identity type</h3>
     {{#each contracts}}
-        <div class="row">
-            {{ ethereumAddress }}
-            ({{ identityType }})
+        <div class="card col-sm-6">
+            <div class="card-block">
+                <h4 class="card-title">
+                    <a href="/contracts/{{ identityType }}">
+                        {{ identityType }}
+                    </a>
+                </h4>
+                <table class="table table-"></table>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Address: </strong>
+                        {{ ethereumAddress }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>ABI:</strong>
+                        <pre>{{ abiDefinition }}</pre>
+                    </li>
+                </ul>
+            </div>
         </div>
     {{/each}}
 </div>

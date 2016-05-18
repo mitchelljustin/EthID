@@ -19,11 +19,12 @@ let port = process.env.WEB_PORT || 8000;
 
 let app = express();
 
-app.engine('.hbs', hbs({
+let handlebars = hbs.create({
     extname: '.hbs',
     layoutsDir: path.resolve('www/layouts'),
     defaultLayout: 'main',
-}));
+});
+app.engine('.hbs', handlebars.engine);
 app.set('views', path.resolve('www/views'));
 app.set('view engine', '.hbs');
 

@@ -1,13 +1,18 @@
 <div class="row">
+    <h2 class="text-sm-center">Your EthID</h2>
     <div class="jumbotron col-sm-10 col-sm-push-1">
-        <h2 class="text-center">Your Ethereum Identity</h2>
-        <h3>
+        <h4>
             {{ profile.email }}
             <small>
                 {{ profile.name }}
             </small>
-        </h3>
-        <table class="table table-hover">
+        </h4>
+        <p>
+            To link a new Ethereum address to your identity,
+            call <code>register("{{ profile.email }}")</code> on any contract found at
+            <a href="/contracts">ethid.xyz/contracts</a>.
+        </p>
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>
@@ -17,7 +22,6 @@
                         Type
                     </th>
                     <th>
-                        Actions
                     </th>
                 </tr>
             </thead>
@@ -29,7 +33,9 @@
                         </a>
                     </td>
                     <td>
-                        {{ identityType }}
+                        <a href="/contracts/{{ identityType }}">
+                            {{ identityType }}
+                        </a>
                     </td>
                     <td class='_button_bar'>
                         {{#if verified}}
@@ -54,29 +60,36 @@
         {{#each identities}}
             {
                 addr: "{{ ethereumAddress }}",
-                identityType: "{{ identityType }}"
+                identityType: "{{ identityType }}",
+                verified: {{ verified }},
             },
         {{/each}}
     ];
     identities.forEach(function (identity) {
-        let $row = $('#' + identity.addr);
+        if (identity.verified) {
+            return;
+        }
+        var $row = $('#' + identity.addr);
+        var postData = {
+            ethereumAddress: identity.addr
+        };
         $row.find('._button_bar ._reject').on('click', function () {
             $.ajax({
                 method: 'POST',
-                url: '/identity/reject/' + identity.identityType,
-                data: {ethereumAddress: identity.addr}
+                url: '/identity/' + identity.identityType + '/reject',
+                data: postData,
             })
-                .done(function () {
+                .success(function () {
                     $row.remove();
                 });
         });
         $row.find('._button_bar ._approve').on('click', function () {
             $.ajax({
                 method: 'POST',
-                url: '/identity/approve/' + identity.identityType,
-                data: {ethereumAddress: identity.addr}
+                url: '/identity/' + identity.identityType + '/approve',
+                data: postData,
             })
-                .done(function () {
+                .success(function () {
                     $row.find('._button_bar').html('<span>Verified</span>');
                 });
         });
