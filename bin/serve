@@ -22,11 +22,13 @@ let app = express();
 let handlebars = hbs.create({
     extname: '.hbs',
     layoutsDir: path.resolve('www/layouts'),
+    partialsDir: path.resolve('www/partials'),
     defaultLayout: 'main',
 });
 app.engine('.hbs', handlebars.engine);
 app.set('views', path.resolve('www/views'));
 app.set('view engine', '.hbs');
+require('../lib/middleware/handlebarsHelpers')(handlebars.handlebars);
 
 app.set('trust proxy', 1); // trust first proxy
 

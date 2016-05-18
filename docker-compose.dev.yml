@@ -1,0 +1,19 @@
+web:
+  build: .
+  ports:
+    - "8000:8000"
+  links:
+    - mongo
+    - geth
+
+mongo:
+  image: mongo
+  ports:
+    - "27017:27017"
+
+geth:
+  build: ./geth
+  environment:
+    - GETHFLAGS=--dev --mine --minerthreads 1
+  ports:
+    - "8545:8545"

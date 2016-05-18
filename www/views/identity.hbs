@@ -1,5 +1,4 @@
 <div class="row">
-    <h2 class="text-sm-center">Your EthID</h2>
     <div class="jumbotron col-sm-10 col-sm-push-1">
         <h4>
             {{ profile.email }}
@@ -12,8 +11,9 @@
             call <code>register("{{ profile.email }}")</code> on any contract found at
             <a href="/contracts">ethid.xyz/contracts</a>.
         </p>
-        <table class="table table-striped">
-            <thead>
+        {{#if identities}}
+            <table class="table table-striped">
+                <thead>
                 <tr>
                     <th>
                         Address
@@ -24,34 +24,43 @@
                     <th>
                     </th>
                 </tr>
-            </thead>
-            {{#each identities}}
-                <tr id="{{ ethereumAddress }}">
-                    <td>
-                        <a href="/{{ ethereumAddress }}">
-                            {{ ethereumAddress }}
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/contracts/{{ identityType }}">
-                            {{ identityType }}
-                        </a>
-                    </td>
-                    <td class='_button_bar'>
-                        {{#if verified}}
-                            <span>Verified</span>
-                        {{ else }}
-                            <button class="btn btn-danger _reject">
-                                Reject
-                            </button>
-                            <button class="btn btn-success _approve">
-                                Approve
-                            </button>
-                        {{/if}}
-                    </td>
-                </tr>
-            {{/each}}
-        </table>
+                </thead>
+                {{#each identities}}
+                    <tr id="{{ ethereumAddress }}">
+                        <td>
+                            <a href="/{{ ethereumAddress }}">
+                                {{ ethereumAddress }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/contracts/{{ identityType }}">
+                                {{ identityType }}
+                            </a>
+                        </td>
+                        <td>
+                            {{#ifEqual registerState "verified"}}
+                                <span>Verified</span>
+                            {{/ifEqual}}
+                            {{#ifEqual registerState "verifying"}}
+                                <span>Verifying..</span>
+                            {{/ifEqual}}
+                            {{#ifEqual registerState "pending"}}
+                                <div class="btn-group _button_bar">
+                                    <button class="btn btn-danger _reject">
+                                        Reject
+                                    </button>
+                                    <button class="btn btn-success _approve">
+                                        Approve
+                                    </button>
+                                </div>
+                            {{/ifEqual}}
+                        </td>
+                    </tr>
+                {{/each}}
+            </table>
+        {{else}}
+            <h4>No pending or verified identities</h4>
+        {{/if}}
     </div>
 </div>
 
@@ -79,9 +88,11 @@
                 url: '/identity/' + identity.identityType + '/reject',
                 data: postData,
             })
-                .success(function () {
-                    $row.remove();
-                });
+                    .success(function () {
+                        $row.fadeOut(10, function () {
+                            $row.remove();
+                        });
+                    });
         });
         $row.find('._button_bar ._approve').on('click', function () {
             $.ajax({
@@ -89,9 +100,9 @@
                 url: '/identity/' + identity.identityType + '/approve',
                 data: postData,
             })
-                .success(function () {
-                    $row.find('._button_bar').html('<span>Verified</span>');
-                });
+                    .success(function () {
+                        $row.find('._button_bar').html('<span>Verifying..</span>');
+                    });
         });
     });
 </script>

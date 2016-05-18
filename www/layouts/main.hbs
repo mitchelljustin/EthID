@@ -13,18 +13,29 @@
             <a class="navbar-brand" href="/">EthID</a>
         </div>
         <ul class="nav navbar-nav">
+            {{#if isLoggedIn}}
+                <li class="nav-item">
+                    <a href="/identity" class="nav-link">
+                        My Identity
+                    </a>
+                </li>
+            {{/if}}
             <li class="nav-item">
                 <a class="nav-link" href="/contracts">
                     Contracts
                 </a>
             </li>
-            {{#if isLoggedIn}}
-                <li class="nav-item">
-                    <a href="/identity" class="nav-link">
-                        Identity
+            <li class="nav-item pull-sm-right">
+                {{#if isLoggedIn}}
+                    <a href="/logout" class="nav-link">
+                        Logout
                     </a>
-                </li>
-            {{/if}}
+                {{else}}
+                    <a href="/login" class="nav-link">
+                        Login
+                    </a>
+                {{/if}}
+            </li>
         </ul>
     </div>
 </nav>
