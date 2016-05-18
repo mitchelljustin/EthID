@@ -1,7 +1,5 @@
 web:
   build: .
-  environment:
-    - WEB_PORT=80
   ports:
     - "80:80"
   links:
