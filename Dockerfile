@@ -10,4 +10,4 @@ RUN npm install
 
 ADD . /app
 
-CMD ["node", "bin /serve"]
+CMD ["node", "bin/serve"]
