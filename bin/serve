@@ -75,8 +75,8 @@ contractManager.start((err) => {
     if (process.env.ENABLE_HTTPS === 'true'){
         let httpsPort = process.env.HTTPS_PORT;
         let opts = {
-            key: fs.readFileSync(process.env.HTTPS_KEY_FILE, 'utf8'),
-            cert: fs.readFileSync(process.env.HTTPS_CERT_FILE, 'utf8'),
+            key: fs.readFileSync('./support/privkey.local.pem', 'utf8'),
+            cert: fs.readFileSync('./support/cert.local.pem', 'utf8'),
         };
         https.createServer(opts, app).listen(httpsPort, () => {
             debug(`Listening for HTTPS on port ${httpsPort}`)
