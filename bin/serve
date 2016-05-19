@@ -10,12 +10,14 @@ let session = require('express-session');
 let MongoStore = require('connect-mongo')(session);
 let bodyParser = require('body-parser');
 let ContractManager = require('../lib/ContractManager');
+let http = require('http');
+let https = require('https');
+let fs = require("fs");
 
 let mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI);
 
 let contractManager = new ContractManager('coinbase');
-let port = process.env.WEB_PORT || 8000;
 
 let app = express();
 
@@ -66,8 +68,30 @@ contractManager.start((err) => {
         console.error(err);
         process.exit(1);
     }
-    debug(`Started contract manager (address ${contractManager.contract.address})`);
-    app.listen(port, () => {
-        debug(`Listening for HTTP on port ${port}`)
-    });
+    debug(`Started contract manager at ${contractManager.contract.address}`);
+
+    let httpPort = process.env.HTTP_PORT;
+
+    if (process.env.ENABLE_HTTPS === 'true'){
+        let httpsPort = process.env.HTTPS_PORT;
+        let opts = {
+            key: fs.readFileSync(process.env.HTTPS_KEY_FILE, 'utf8'),
+            cert: fs.readFileSync(process.env.HTTPS_CERT_FILE, 'utf8'),
+        };
+        https.createServer(opts, app).listen(httpsPort, () => {
+            debug(`Listening for HTTPS on port ${httpsPort}`)
+        });
+        let redirectApp = express();
+        redirectApp.all('*', (req, res) => {
+            res.redirect(`https://${req.headers.host}${req.path}`);
+        });
+        http.createServer(redirectApp).listen(httpPort, () => {
+            debug(`Listening for HTTP on port ${httpPort} and redirecting`);
+        });
+    }
+    else {
+        http.createServer(app).listen(httpPort, () => {
+            debug(`Listening for HTTP on port ${httpPort}`)
+        });
+    }
 });
