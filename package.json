@@ -9,17 +9,17 @@
   "author": "Mitchell Van Der Hoeff",
   "license": "ISC",
   "dependencies": {
-    "async": "2.0.0-rc.3",
-    "body-parser": "1.15.1",
-    "connect-mongo": "1.2.0",
+    "async": "^2.0.0-rc.3",
+    "body-parser": "^1.15.1",
+    "connect-mongo": "^1.2.0",
     "debug": "latest",
-    "email-validator": "1.0.4",
-    "express": "4.13.4",
-    "express-handlebars": "3.0.0",
-    "express-session": "1.13.0",
-    "localenv": "0.2.2",
-    "mongoose": "4.4.17",
+    "email-validator": "^1.0.4",
+    "express": "^4.13.4",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.13.0",
+    "localenv": "^0.2.2",
+    "mongoose": "^4.4.17",
     "request": "latest",
-    "web3": "0.15.3"
+    "web3": "^0.15.3"
   }
 }
