@@ -1,108 +1,164 @@
 <div class="row">
-    <div class="jumbotron col-sm-10 col-sm-push-1">
-        <h4>
-            {{ profile.email }}
-            <small>
-                {{ profile.name }}
-            </small>
-        </h4>
-        <p>
-            To link a new Ethereum address to your identity,
-            call <code>register("{{ profile.email }}")</code> on any contract found at
-            <a href="/contracts">ethid.xyz/contracts</a>.
-        </p>
-        {{#if identities}}
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>
+   <div class="col-md-5">
+      <div class="card">
+         <div class="card-block">
+            <h3 class="card-title">
+               <span>My {{ identityType }} Identity</span>
+            </h3>
+            <div class="card-text">
+               <div class="text-sm-center"
+                    style="
+                  border: 1px lightgray solid;
+                  background-color: white;
+                  border-radius: 5px;
+                  padding: 3px 0px;
+            ">
+                  {{ profile.email }}
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="card">
+         <div class="card-block">
+            <h5 class="card-title">
+               Identity Contract
+            </h5>
+            <div class="card-text">
+               <p>
+                  To add this contract to your wallet, navigate to Contracts > Watch Contract in your Mist Wallet
+                  and paste the address and ABI into it.
+               </p>
+               <p>
+                  To link an Ethereum address to this identity, call <code>register("{{ profile.email }}")</code> from that address
+                  on the contract and wait for the address to show up here.
+               </p>
+            </div>
+         </div>
+         <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+               <span>Address</span>
+               <pre>{{ contract.ethereumAddress }}</pre>
+            </li>
+            <li class="list-group-item">
+               <span>ABI</span>
+               <pre>{{ contract.abiDefinition }}</pre>
+            </li>
+         </ul>
+      </div>
+   </div>
+   <div class="col-md-7">
+      <div class="card row">
+         <div class="card-block">
+            <h4 class="card-title">
+               Linked Addresses
+            </h4>
+            <div class="card-text">
+               <table class="table table-sm">
+                  <thead>
+                  <tr>
+                     <th>
                         Address
-                    </th>
-                    <th>
-                        Type
-                    </th>
-                    <th>
-                    </th>
-                </tr>
-                </thead>
-                {{#each identities}}
-                    <tr id="{{ ethereumAddress }}">
+                     </th>
+                  </tr>
+                  </thead>
+                  {{#each verifiedIds}}
+                     <tr id="{{ ethereumAddress }}">
                         <td>
-                            <a href="/{{ ethereumAddress }}">
-                                {{ ethereumAddress }}
-                            </a>
+                           <a href="/{{ ethereumAddress }}">
+                              {{ ethereumAddress }}
+                           </a>
                         </td>
-                        <td>
-                            <a href="/contracts/{{ identityType }}">
-                                {{ identityType }}
-                            </a>
-                        </td>
-                        <td>
-                            {{#ifEqual registerState "verified"}}
-                                <span>Verified</span>
-                            {{/ifEqual}}
-                            {{#ifEqual registerState "verifying"}}
-                                <span>Verifying..</span>
-                            {{/ifEqual}}
-                            {{#ifEqual registerState "pending"}}
-                                <div class="btn-group _button_bar">
-                                    <button class="btn btn-danger _reject">
-                                        Reject
+                     </tr>
+                  {{/each}}
+               </table>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         {{#each unverifiedIds}}
+            <div class="card row">
+               <div class="card-block">
+                  <h4 class="card-title">
+                     Pending Addresses
+                  </h4>
+                  <div class="card-text">
+                     <table class="table table-sm">
+                        <thead>
+                        <tr>
+                           <th>
+                              Address
+                           </th>
+                        </tr>
+                        </thead>
+                        <tr id="{{ ethereumAddress }}">
+                           <td>
+                              <pre>{{ ethereumAddress }}</pre>
+                           </td>
+                           <td>
+                              <div class="btn-group _button_bar">
+                                 <button class="btn btn-secondary btn-sm _verifying
+                                    {{#ifEqual registerState "pending"}}hidden-sm-up{{/ifEqual}}
+                                 " disabled>
+                                    Verifying..
+                                 </button>
+                                 {{#ifEqual registerState "pending"}}
+                                    <button class="btn btn-danger btn-sm _reject">
+                                       Reject
                                     </button>
-                                    <button class="btn btn-success _approve">
-                                        Approve
+                                    <button class="btn btn-success btn-sm _approve">
+                                       Approve
                                     </button>
-                                </div>
-                            {{/ifEqual}}
-                        </td>
-                    </tr>
-                {{/each}}
-            </table>
-        {{else}}
-            <h4>No pending or verified identities</h4>
-        {{/if}}
-    </div>
+                                 {{/ifEqual}}
+                              </div>
+                           </td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         {{/each}}
+      </div>
+
+   </div>
 </div>
 
 <script>
-    var identities = [
-        {{#each identities}}
-            {
-                addr: "{{ ethereumAddress }}",
-                identityType: "{{ identityType }}",
-                verified: {{ verified }},
-            },
-        {{/each}}
-    ];
-    identities.forEach(function (identity) {
-        if (identity.verified) {
-            return;
-        }
-        var $row = $('#' + identity.addr);
-        var postData = {
-            ethereumAddress: identity.addr
-        };
-        $row.find('._button_bar ._reject').on('click', function () {
-            $.ajax({
-                method: 'POST',
-                url: '/identity/' + identity.identityType + '/reject',
-                data: postData,
-            })
-                    .success(function () {
-                        $row.fadeOut(10, function () {
-                            $row.remove();
-                        });
-                    });
-        });
-        $row.find('._button_bar ._approve').on('click', function () {
-            $.ajax({
-                method: 'POST',
-                url: '/identity/' + identity.identityType + '/approve',
-                data: postData,
-            })
-                    .success(function () {
-                        $row.find('._button_bar').html('<span>Verifying..</span>');
-                    });
-        });
-    });
+   var unverifiedIds = [
+      {{#each unverifiedIds}}
+         {
+            addr: "{{ ethereumAddress }}",
+            identityType: "{{ identityType }}",
+         },
+      {{/each}}
+   ];
+   unverifiedIds.forEach(function (identity) {
+      var $row = $('#' + identity.addr);
+      var postData = {
+         ethereumAddress: identity.addr
+      };
+      $row.find('._button_bar ._reject').on('click', function () {
+         $.ajax({
+            method: 'POST',
+            url: '/identity/' + identity.identityType + '/reject',
+            data: postData,
+         })
+               .success(function () {
+                  $row.fadeOut(10, function () {
+                     $row.remove();
+                  });
+               });
+      });
+      $row.find('._button_bar ._approve').on('click', function () {
+         $.ajax({
+            method: 'POST',
+            url: '/identity/' + identity.identityType + '/approve',
+            data: postData,
+         })
+               .success(function () {
+                  $row.find('._verifying').show();
+                  $row.find('._approve').hide();
+                  $row.find('._reject').hide();
+               });
+      });
+   });
 </script>

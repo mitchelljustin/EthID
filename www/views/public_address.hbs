@@ -1,51 +1,56 @@
 <div class="row">
-    <div class="col-sm-4 jumbotron">
-        <p>
-            These identities are stored and cryptographically secured in the Ethereum blockchain,
-            and verified by EthID.
-        </p>
-        <p>
-            If you want to link your own identity, visit <a href="http://ethid.xyz">ethid.xyz</a>.
-        </p>
-        <p>
-            If you would like to use EthID in your Ethereum contract, visit <a href="/contracts">ethid.xyz/contracts</a>.
-        </p>
+    <div class="col-md-4">
+        <div class="card">
+           <div class="card-block">
+              <h3 class="card-title">
+                 Public Identity
+              </h3>
+              <div class="card-text">
+                 <p>
+                    These identities are stored and cryptographically secured in the Ethereum blockchain,
+                    and verified by EthID.
+                 </p>
+              </div>
+           </div>
+        </div>
     </div>
-    <div class="col-sm-8">
-        <h2 class="text-center">
-            Identities for
-            <br>
-            <pre>{{ ethereumAddress }}</pre>
-
-        </h2>
-        {{#unless identities}}
-            <h4>No verified identities for this address</h4>
-        {{else}}
-            <table class="table table-condensed">
-                <thead>
-                <tr>
-                    <th>
-                        Type
-                    </th>
-                    <th>
-                        Email
-                    </th>
-                </tr>
-                </thead>
-                {{#each identities}}
-                    <tr>
-                        <td>
-                            <a href="/contracts/{{ identityType }}">
-                                {{ identityType }}
-                            </a>
-                        </td>
-                        <td>
-                            {{ emailAddress }}
-                        </td>
-                    </tr>
-                {{/each}}
-            </table>
-        {{/unless}}
-
+    <div class="col-md-8">
+        <div class="card">
+           <div class="card-block">
+              <div class="card-text">
+                 <h3 class="text-center">
+                    <pre>{{ ethereumAddress }}</pre>
+                 </h3>
+                 {{#unless identities}}
+                    <h4>No verified identities for this address</h4>
+                 {{else}}
+                    <table class="table table-condensed">
+                       <thead>
+                       <tr>
+                          <th>
+                             Email
+                          </th>
+                          <th>
+                             Type
+                          </th>
+                       </tr>
+                       </thead>
+                       {{#each identities}}
+                          <tr>
+                             <td>
+                                {{ emailAddress }}
+                             </td>
+                             <td>
+                                <a href="/contracts/{{ identityType }}">
+                                   {{ identityType }}
+                                </a>
+                             </td>
+                          </tr>
+                       {{/each}}
+                    </table>
+                 {{/unless}}
+              </div>
+           </div>
+        </div>
     </div>
 </div>

@@ -17,6 +17,7 @@
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.13.0",
+    "http-error": "0.0.6",
     "localenv": "^0.2.2",
     "mongoose": "^4.4.17",
     "request": "latest",

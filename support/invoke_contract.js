@@ -12,10 +12,10 @@ let provider = new Web3.providers.HttpProvider(process.env.ETH_NODE_URI);
 web3.setProvider(provider);
 web3.eth.defaultAccount = web3.eth.coinbase;
 
-let contractSource = fs.readFileSync('./contracts/eid.sol', 'utf-8');
+let contractSource = fs.readFileSync('./contracts/EthID.sol', 'utf-8');
 
 let compiled = web3.eth.compile.solidity(contractSource);
-let Contract = web3.eth.contract(compiled.EthereumID.info.abiDefinition);
+let Contract = web3.eth.contract(compiled.EthID.info.abiDefinition);
 let contract = Contract.at(contractAddress);
 
 console.log(`registering to ${contractAddress} with '${email}'`);

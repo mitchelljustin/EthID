@@ -12,23 +12,24 @@ let bodyParser = require('body-parser');
 let ContractManager = require('../lib/ContractManager');
 let http = require('http');
 let https = require('https');
+let HttpError = require('http-error');
 let fs = require("fs");
 
 let mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI);
 
-let contractManager = new ContractManager('coinbase');
+let contractManager = new ContractManager('Coinbase');
 
 let app = express();
 
 let handlebars = hbs.create({
     extname: '.hbs',
-    layoutsDir: path.resolve('www/layouts'),
-    partialsDir: path.resolve('www/partials'),
+    layoutsDir: './www/layouts',
+    partialsDir: './www/partials',
     defaultLayout: 'main',
 });
 app.engine('.hbs', handlebars.engine);
-app.set('views', path.resolve('www/views'));
+app.set('views', './www/views');
 app.set('view engine', '.hbs');
 require('../lib/middleware/handlebarsHelpers')(handlebars.handlebars);
 
@@ -40,25 +41,30 @@ app.use(session({
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     resave: false,
     saveUninitialized: true,
-    cookie: {}
+    cookie: {},
 }));
 app.use(bodyParser.urlencoded({extended: false}));
 
 let router = require('../lib/router');
+app.use(router);
 
 app.use(express.static(path.resolve('www/public')));
 app.use('/bower_components', express.static(path.resolve('www/bower_components')));
 
-app.use(router);
-
 app.use((err, req, res, next) => {
-    if (err) {
-        res.json({
-            message: err.message,
-            stack: err.stack,
+    if (!err) {
+        return next();
+    }
+    if (err instanceof HttpError.HttpError) {
+        if (err.code >= 500 && process.env.NODE_ENV === 'production') {
+            return res.status(err.code).send('Internal Server Error');
+        }
+        res.status(err.code).send({
+            error: err.toJSON(),
         });
-    } else {
-        next();
+    }
+    else {
+        res.status(500).send('Internal Server Error');
     }
 });
 
@@ -72,7 +78,7 @@ contractManager.start((err) => {
 
     let httpPort = process.env.HTTP_PORT;
 
-    if (process.env.ENABLE_HTTPS === 'true'){
+    if (process.env.ENABLE_HTTPS === 'true') {
         let httpsPort = process.env.HTTPS_PORT;
         let opts = {
             key: fs.readFileSync('./support/privkey.local.pem', 'utf8'),
