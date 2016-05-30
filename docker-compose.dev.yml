@@ -14,7 +14,7 @@ mongo:
     - "27017:27017"
 
 geth:
-  build: ./geth
+  build: ./support/geth
   environment:
     - GETHFLAGS=--dev --mine --minerthreads 1
   ports:
