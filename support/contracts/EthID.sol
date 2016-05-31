@@ -14,16 +14,11 @@ contract owned {
 }
 
 contract EthID is owned {
-    struct Identity {
-        string identityValue;
-        uint verifiedAt;
-    }
-
     event Linked(address addr, string identityValue);
     event Unlinked(address addr, string identityValue);
     event IdentityVerified(address addr, string identityValue);
 
-    mapping (address => Identity) public verifiedIdentityOf;
+    mapping (address => string) public verifiedIdentityOf;
     string public identityType;
 
     function EthID(string _identityType) {
@@ -39,16 +34,16 @@ contract EthID is owned {
     }
 
     function unlink() {
-        Identity identity = verifiedIdentityOf[msg.sender];
-        if (bytes(identity.identityValue).length == 0) {
+        string identityValue = verifiedIdentityOf[msg.sender];
+        if (bytes(identityValue).length == 0) {
             throw;
         }
-        Unlinked(msg.sender, identity.identityValue);
+        Unlinked(msg.sender, identityValue);
         delete verifiedIdentityOf[msg.sender];
     }
 
     function _setVerifiedIdentity(address addr, string identityValue) ownerOnly {
-        verifiedIdentityOf[addr] = Identity(identityValue, now);
+        verifiedIdentityOf[addr] = identityValue;
         IdentityVerified(addr, identityValue);
     }
 }
