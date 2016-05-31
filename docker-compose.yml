@@ -11,6 +11,6 @@ mongo:
   image: mongo
 
 geth:
-  build: ./geth
+  build: ./support/geth
   environment:
     - GETHFLAGS=--testnet
