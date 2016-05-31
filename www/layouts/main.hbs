@@ -31,11 +31,7 @@
             <li class="nav-item pull-sm-right">
                 {{#if isLoggedIn}}
                     <a href="/logout" class="nav-link">
-                        Logout
-                    </a>
-                {{else}}
-                    <a href="/login" class="nav-link">
-                        Login
+                        Logout ({{ identityType }})
                     </a>
                 {{/if}}
             </li>

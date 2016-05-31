@@ -28,22 +28,30 @@
                        <thead>
                        <tr>
                           <th>
-                             Email
+                             Identity
                           </th>
                           <th>
                              Type
+                          </th>
+                          <th>
+                             Date
                           </th>
                        </tr>
                        </thead>
                        {{#each identities}}
                           <tr>
                              <td>
-                                {{ emailAddress }}
+                                <a href="{{ identityValue }}">
+                                   {{ identityValue }}
+                                </a>
                              </td>
                              <td>
                                 <a href="/contracts/{{ identityType }}">
                                    {{ identityType }}
                                 </a>
+                             </td>
+                             <td>
+                                <small>{{ createdAt }}</small>
                              </td>
                           </tr>
                        {{/each}}

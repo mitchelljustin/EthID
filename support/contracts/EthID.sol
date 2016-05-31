@@ -14,37 +14,41 @@ contract owned {
 }
 
 contract EthID is owned {
-    event Registered(address addr, string email);
-    event RegisteredVerified(address addr, string email);
-    event Unregistered(address addr, string email);
-    event UnregisteredVerified(address addr, string email);
+    struct Identity {
+        string identityValue;
+        uint verifiedAt;
+    }
 
-    mapping (address => string) public verifiedEmailOf;
+    event Linked(address addr, string identityValue);
+    event Unlinked(address addr, string identityValue);
+    event IdentityVerified(address addr, string identityValue);
+
+    mapping (address => Identity) public verifiedIdentityOf;
     string public identityType;
 
     function EthID(string _identityType) {
         identityType = _identityType;
     }
-    
+
     function () {
         throw;
     }
 
-    function register(string email) {
-        Registered(msg.sender, email);
+    function link(string identityValue) {
+        Linked(msg.sender, identityValue);
     }
 
-    function unregister(string email) {
-        Unregistered(msg.sender, email);
+    function unlink() {
+        Identity identity = verifiedIdentityOf[msg.sender];
+        if (bytes(identity.identityValue).length == 0) {
+            throw;
+        }
+        Unlinked(msg.sender, identity.identityValue);
+        delete verifiedIdentityOf[msg.sender];
     }
 
-    function _setVerifiedIdentity(address addr, string email) ownerOnly {
-        verifiedEmailOf[addr] = email;
-        RegisteredVerified(addr, email);
-    }
-
-    function _delVerifiedIdentity(address addr, string email) ownerOnly {
-        verifiedEmailOf[addr] = "";
-        UnregisteredVerified(addr, email);
+    function _setVerifiedIdentity(address addr, string identityValue) ownerOnly {
+        verifiedIdentityOf[addr] = Identity(identityValue, now);
+        IdentityVerified(addr, identityValue);
     }
 }

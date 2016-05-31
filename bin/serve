@@ -64,7 +64,13 @@ app.use((err, req, res, next) => {
         });
     }
     else {
-        res.status(500).send('Internal Server Error');
+        res.status(500);
+        if (process.env.NODE_ENV === 'production') {
+            res.send('Internal Server Error');
+        }
+        else {
+            res.json(err);
+        }
     }
 });
 

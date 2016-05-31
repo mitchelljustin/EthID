@@ -1,39 +1,59 @@
 <div class="row">
-    <div class="col-sm-10 col-sm-push-1">
-        <div class="jumbotron">
-            <h3>Your identity, on the blockchain</h3>
-            <hr>
-            <p>
-                <strong>EthID</strong> allows you to link your identity to an Ethereum address and store it on the
-                Ethereum blockchain, where it can be used by other contracts that require identity.
-            </p>
-            <p>
-                Linking an Ethereum address is as simple as calling the <code>register()</code> function from that address
-                on one of the <a href="/contracts">EthID contracts</a>, and
-                <a href="/identity">approving</a> the address on this website.
-            </p>
-            <p>
-                <strong>EthID</strong> is <a href="https://github.com/mvanderh/EthereumID">open source</a>.
-                Please be aware that this software is still in a pre-alpha stage.
-            </p>
-            <p>
-                <small>
-                    Right now, only Coinbase OAuth is supported.
-                    However, the plan in the future is to support a plethora of OAuth providers (e.g. Twitter, Facebook, Google).
-                </small>
-            </p>
-            <div class="row">
-                <div class="col-sm-10 col-sm-push-1">
-                    <h5>Search EthIDs</h5>
-                    {{> ethIDSearchBar }}
-                </div>
-            </div>
-
-            {{#unless isLoggedIn}}
-                <a href="/login" class="btn btn-primary">
-                    Login with Coinbase
-                </a>
-            {{/unless}}
-        </div>
-    </div>
+   <div class="col-md-8">
+      <div class="jumbotron">
+         <h2>
+            EthID
+            <small>Your identity on the blockchain</small>
+         </h2>
+         <hr>
+         <p>
+            EthID allows you to link your identity to an Ethereum address and store it on the
+            Ethereum blockchain, where it can be used by other contracts that require identity.
+         </p>
+         <h4>How to link an identity</h4>
+         <p>
+            Login with an online identity (on the right), then call <code>link()</code> on the
+            corresponding identity contract with your profile URL.
+         </p>
+         <p>
+            Don't worry if this is confusing. There are step-by-step instructions to link an address after you login.
+         </p>
+         <h4>How to use identity</h4>
+         <p>
+            To use identity in your own contract, find an <a href="/contracts">identity contract</a> you would like to use
+            and read its <code>verifiedIdentityOf</code> mapping. Each identity provider (Twitter, Facebook, Coinbase, etc.)
+            has its own identity contract.
+         </p>
+      </div>
+   </div>
+   <div class="col-md-4">
+      <div class="card text-sm-center">
+         <div class="card-block">
+            <h3 class="card-title">
+               {{#if isLoggedIn}}
+                  Logged in as
+               {{else}}
+                  Login
+               {{/if}}
+            </h3>
+         </div>
+         <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+               <a href="/coinbase/login" class="btn btn-lg btn-primary">
+                  Login with Coinbase
+               </a>
+            </li>
+            <li class="list-group-item">
+               <a href="/twitter/login" class="btn btn-lg btn-primary">
+                  Login with Twitter
+               </a>
+            </li>
+            <li class="list-group-item">
+               <a href="/facebook/login" class="btn btn-lg btn-primary">
+                  Login with Facebook
+               </a>
+            </li>
+         </ul>
+      </div>
+   </div>
 </div>

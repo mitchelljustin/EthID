@@ -13,7 +13,9 @@
                   border-radius: 5px;
                   padding: 3px 0px;
             ">
-                  {{ profile.email }}
+                  <a href="{{ identityValue }}">
+                     {{ identityValue }}
+                  </a>
                </div>
             </div>
          </div>
@@ -25,12 +27,14 @@
             </h5>
             <div class="card-text">
                <p>
+                  <strong>Watch</strong><br>
                   To add this contract to your wallet, navigate to Contracts > Watch Contract in your Mist Wallet
                   and paste the address and ABI into it.
                </p>
                <p>
-                  To link an Ethereum address to this identity, call <code>register("{{ profile.email }}")</code> from that address
-                  on the contract and wait for the address to show up here.
+                  <strong>Link</strong><br>
+                  To link an Ethereum address to this identity, call <code>link("{{ identityValue }}")</code> from
+                  that address on the contract and wait for the address to appear here, after which you can approve it.
                </p>
             </div>
          </div>
@@ -47,17 +51,20 @@
       </div>
    </div>
    <div class="col-md-7">
-      <div class="card row">
+      <div class="card">
          <div class="card-block">
             <h4 class="card-title">
                Linked Addresses
             </h4>
             <div class="card-text">
-               <table class="table table-sm">
+               <table class="table table-hover">
                   <thead>
                   <tr>
                      <th>
                         Address
+                     </th>
+                     <th>
+                        Date
                      </th>
                   </tr>
                   </thead>
@@ -68,78 +75,67 @@
                               {{ ethereumAddress }}
                            </a>
                         </td>
+                        <td>
+                           <small>{{ createdAt }}</small>
+                        </td>
                      </tr>
                   {{/each}}
                </table>
             </div>
          </div>
       </div>
-      <div class="row">
-         {{#each unverifiedIds}}
-            <div class="card row">
+      {{#each unverifiedIds}}
+         <div class="row">
+            <div id="pending-{{ ethereumAddress }}" class="col-lg-8 col-lg-push-2 card">
                <div class="card-block">
                   <h4 class="card-title">
-                     Pending Addresses
+                     Pending Address
                   </h4>
-                  <div class="card-text">
-                     <table class="table table-sm">
-                        <thead>
-                        <tr>
-                           <th>
-                              Address
-                           </th>
-                        </tr>
-                        </thead>
-                        <tr id="{{ ethereumAddress }}">
-                           <td>
-                              <pre>{{ ethereumAddress }}</pre>
-                           </td>
-                           <td>
-                              <div class="btn-group _button_bar">
-                                 <button class="btn btn-secondary btn-sm _verifying
-                                    {{#ifEqual registerState "pending"}}hidden-sm-up{{/ifEqual}}
-                                 " disabled>
-                                    Verifying..
-                                 </button>
-                                 {{#ifEqual registerState "pending"}}
-                                    <button class="btn btn-danger btn-sm _reject">
-                                       Reject
-                                    </button>
-                                    <button class="btn btn-success btn-sm _approve">
-                                       Approve
-                                    </button>
-                                 {{/ifEqual}}
-                              </div>
-                           </td>
-                        </tr>
-                     </table>
-                  </div>
+               </div>
+               <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                     <a href="/{{ ethereumAddress }}">
+                        {{ ethereumAddress }}
+                     </a>
+                  </li>
+                  <li class="list-group-item">
+                     {{ createdAt }}
+                  </li>
+               </ul>
+               <div class="card-footer _actions">
+                  {{#ifEqual registerState "pending"}}
+                     <button class="btn btn-danger _reject">
+                        Reject
+                     </button>
+                     <button class="btn btn-success _approve">
+                        Approve
+                     </button>
+                  {{/ifEqual}}
+                  {{#ifEqual registerState "verifying"}}
+                     <span>Verifying..</span>
+                  {{/ifEqual}}
                </div>
             </div>
-         {{/each}}
-      </div>
-
+         </div>
+      {{/each}}
    </div>
 </div>
 
 <script>
-   var unverifiedIds = [
+   var unverifiedAddrs = [
       {{#each unverifiedIds}}
-         {
-            addr: "{{ ethereumAddress }}",
-            identityType: "{{ identityType }}",
-         },
+         "{{ ethereumAddress }}"
       {{/each}}
    ];
-   unverifiedIds.forEach(function (identity) {
-      var $row = $('#' + identity.addr);
+   unverifiedAddrs.forEach(function (addr) {
+      var $row = $('#pending-' + addr);
       var postData = {
-         ethereumAddress: identity.addr
+         ethereumAddress: addr
       };
-      $row.find('._button_bar ._reject').on('click', function () {
+      $row.find('._reject').on('click', function () {
          $.ajax({
             method: 'POST',
-            url: '/identity/' + identity.identityType + '/reject',
+            url: '/identity/reject',
             data: postData,
          })
                .success(function () {
@@ -148,16 +144,16 @@
                   });
                });
       });
-      $row.find('._button_bar ._approve').on('click', function () {
+      $row.find('._approve').on('click', function () {
          $.ajax({
             method: 'POST',
-            url: '/identity/' + identity.identityType + '/approve',
+            url: '/identity/approve',
             data: postData,
          })
                .success(function () {
-                  $row.find('._verifying').show();
                   $row.find('._approve').hide();
                   $row.find('._reject').hide();
+                  $row.find('._actions').append('<span>Verifying..</span>');
                });
       });
    });
