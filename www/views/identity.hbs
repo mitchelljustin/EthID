@@ -33,7 +33,8 @@
                </p>
                <p>
                   <strong>Link</strong><br>
-                  To link an Ethereum address to this identity, call <code>link("{{ identityValue }}")</code> from
+                  To link an Ethereum address to this identity, call <code>link()</code> with <i>{{ identityValue }}</i>
+                  from
                   that address on the contract and wait for the address to appear here, after which you can approve it.
                </p>
             </div>
@@ -56,32 +57,30 @@
             <h4 class="card-title">
                Linked Addresses
             </h4>
-            <div class="card-text">
-               <table class="table table-hover">
-                  <thead>
-                  <tr>
-                     <th>
-                        Address
-                     </th>
-                     <th>
-                        Date
-                     </th>
+            <table class="table">
+               <thead>
+               <tr>
+                  <th>
+                     Address
+                  </th>
+                  <th class="hidden-sm-down">
+                     Date
+                  </th>
+               </tr>
+               </thead>
+               {{#each verifiedIds}}
+                  <tr id="{{ ethereumAddress }}">
+                     <td>
+                        <a href="/{{ ethereumAddress }}">
+                           {{ ethereumAddress }}
+                        </a>
+                     </td>
+                     <td class="hidden-sm-down">
+                        <small>{{ createdAt }}</small>
+                     </td>
                   </tr>
-                  </thead>
-                  {{#each verifiedIds}}
-                     <tr id="{{ ethereumAddress }}">
-                        <td>
-                           <a href="/{{ ethereumAddress }}">
-                              {{ ethereumAddress }}
-                           </a>
-                        </td>
-                        <td>
-                           <small>{{ createdAt }}</small>
-                        </td>
-                     </tr>
-                  {{/each}}
-               </table>
-            </div>
+               {{/each}}
+            </table>
          </div>
       </div>
       {{#each unverifiedIds}}
