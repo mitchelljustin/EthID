@@ -14,11 +14,10 @@ let http = require('http');
 let https = require('https');
 let HttpError = require('http-error');
 let fs = require("fs");
+let async = require('async');
 
 let mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI);
-
-let contractManager = new ContractManager('Coinbase');
 
 let app = express();
 
@@ -38,7 +37,7 @@ app.set('trust proxy', 1); // trust first proxy
 app.use(session({
     key: 'sessions',
     secret: process.env.SESSION_SECRET,
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    store: new MongoStore({mongooseConnection: mongoose.connection}),
     resave: false,
     saveUninitialized: true,
     cookie: {},
@@ -69,19 +68,16 @@ app.use((err, req, res, next) => {
             res.send('Internal Server Error');
         }
         else {
-            res.json(err);
+            if (err instanceof Error) {
+                res.send(err.stack);
+            } else {
+                res.json(err);
+            }
         }
     }
 });
 
-debug(`Starting..`);
-contractManager.start((err) => {
-    if (err) {
-        console.error(err);
-        process.exit(1);
-    }
-    debug(`Started contract manager at ${contractManager.contract.address}`);
-
+function startHttp() {
     let httpPort = process.env.HTTP_PORT;
 
     if (process.env.ENABLE_HTTPS === 'true') {
@@ -106,4 +102,24 @@ contractManager.start((err) => {
             debug(`Listening for HTTP on port ${httpPort}`)
         });
     }
-});
+}
+
+debug(`Starting..`);
+let activeIdentityTypes = (process.env.ACTIVE_IDENTITY_TYPES || '').split(',');
+let contractManagers = activeIdentityTypes.map(identityType => new ContractManager(identityType));
+async.map(
+    contractManagers,
+    (manager, done) => {
+        debug(`Starting contract manager for ${manager.identityType}`);
+        manager.start(done);
+    },
+    (err) => {
+        if (err) {
+            console.error(err);
+            process.exit(1);
+        }
+        debug(`Started contract managers`);
+
+        startHttp();
+    }
+);
