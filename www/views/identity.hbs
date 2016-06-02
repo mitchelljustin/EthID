@@ -27,15 +27,18 @@
             </h5>
             <div class="card-text">
                <p>
+                  <strong>Link</strong><br>
+                  To link an Ethereum address to this identity, call <code>link()</code> with <i>{{ identityValue }}</i>
+                  from that address on the contract and wait for the address to appear here, after which you can approve it.
+               </p>
+               <p>
+                  Do this by invoking the contract function in your Mist Wallet, or sending a transaction to the contract
+                  address with the given link data, found below.
+               </p>
+               <p>
                   <strong>Watch</strong><br>
                   To add this contract to your wallet, navigate to Contracts > Watch Contract in your Mist Wallet
                   and paste the address and ABI into it.
-               </p>
-               <p>
-                  <strong>Link</strong><br>
-                  To link an Ethereum address to this identity, call <code>link()</code> with <i>{{ identityValue }}</i>
-                  from
-                  that address on the contract and wait for the address to appear here, after which you can approve it.
                </p>
             </div>
          </div>
@@ -43,6 +46,10 @@
             <li class="list-group-item">
                <span>Address</span>
                <pre>{{ contract.ethereumAddress }}</pre>
+            </li>
+            <li class="list-group-item">
+               <span>Link Data</span>
+               <pre>{{ linkAddressTxData }}</pre>
             </li>
             <li class="list-group-item">
                <span>ABI</span>
