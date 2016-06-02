@@ -6,6 +6,7 @@ web:
   links:
     - mongo
     - geth
+    - geth-mainnet
 
 mongo:
   image: mongo
@@ -14,3 +15,8 @@ geth:
   build: ./support/geth
   environment:
     - GETHFLAGS=--testnet
+
+geth-mainnet:
+  build: ./support/geth
+  environment:
+    - GETHFLAGS=
