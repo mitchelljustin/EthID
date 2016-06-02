@@ -16,4 +16,4 @@ cat ~/.accountpassword
 cat ~/.primaryaccount
 echo ---
 
-geth ${GETHFLAGS} --rpc --rpcaddr "0.0.0.0" --rpccorsdomain "*" --password ~/.accountpassword --unlock 0
+geth ${GETHFLAGS} --fast --rpc --rpcaddr "0.0.0.0" --rpccorsdomain "*" --password ~/.accountpassword --unlock 0
