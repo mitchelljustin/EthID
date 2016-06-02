@@ -5,13 +5,12 @@ web:
     - "443:443"
   links:
     - mongo
-    - geth
-    - geth-mainnet
+    - geth:geth-testnet
 
 mongo:
   image: mongo
 
-geth:
+geth-testnet:
   build: ./support/geth
   environment:
     - GETHFLAGS=--testnet
